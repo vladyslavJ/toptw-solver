@@ -229,25 +229,43 @@ def menu_experiments():
         print("\nЕксперимент: визначення k_no.")
         n_str = _ask("Розмірності n через кому (напр. 10,20,50): ", "10,20,50")
         n_values = [int(x.strip()) for x in n_str.split(",")]
-        R = _ask_int("  Кількість повторів R", 20)
+
+        k_str = _ask("Кількість маршрутів k через кому (напр. 2,3,5): ", "2,3,5")
+        k_values = [int(x.strip()) for x in k_str.split(",")]
+
+        R = _ask_int("  Кількість повторів R", 10)
         print("Розпочато. Це може зайняти декілька хвилин...")
-        experiment_kno(n_values=n_values, R=R)
+        experiment_kno(n_values=n_values, k_values=k_values, R=R)
 
     elif choice == "2":
         print("\nЕксперимент: вплив β.")
         n = _ask_int("  Розмірність задачі n", 20)
+        k = _ask_int("  Кількість маршрутів k", 2)
         R = _ask_int("  Кількість повторів R", 30)
+        k_no = _ask_int("  Умова завершення k_no", 10 * n * k)
         print("Розпочато. Це може зайняти декілька хвилин...")
-        experiment_beta(n=n, R=R)
+        experiment_beta(n=n, k=k, R=R, k_no=k_no)
 
     elif choice == "3":
         print("\nЕксперимент: вплив розмірності.")
         n_str = _ask("Розмірності n через кому (напр. 5,10,20,50,100): ",
-                     "5,10,20,50,100")
+                    "5,10,20,50,100")
         n_values = [int(x.strip()) for x in n_str.split(",")]
+
+        k = _ask_int("  Кількість маршрутів k", 2)
         R = _ask_int("  Кількість повторів R", 20)
+        beta = _ask_float("  β", 0.1)
+
+        print("Для k_no використовується залежність k_no = 10 * n * k.")
         print("Розпочато. Це може зайняти декілька хвилин...")
-        experiment_dimensionality(n_values=n_values, R=R)
+
+        experiment_dimensionality(
+            n_values=n_values,
+            k=k,
+            R=R,
+            beta=beta,
+            kno_func=lambda n: 10 * n * k
+        )
 
 
 # ======================================================================= #
