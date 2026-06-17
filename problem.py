@@ -101,6 +101,25 @@ class ProblemInstance:
         """Тривалість маршруту від старту до повернення в депо."""
         return self.route_end_time(route, r) - self.s[r]
 
+    def route_waypoint_times(self, route: list[int], r: int) -> list[tuple[int, float]]:
+        """
+        Повертає список (пункт, час_прибуття/початку_огляду) для депо + об'єктів + депо.
+        Для депо на старті — час відправлення s[r].
+        Для кожного об'єкта — фактичний початок огляду (з урахуванням очікування).
+        Для депо в кінці — час повернення.
+        """
+        waypoints = [(0, self.s[r])]
+        cur = self.s[r]
+        prev = 0
+        for obj in route:
+            arr = cur + self.d[prev][obj]
+            start = max(arr, self.o[obj])
+            waypoints.append((obj, start))
+            cur = start + self.t[obj - 1]
+            prev = obj
+        waypoints.append((0, cur + self.d[prev][0]))
+        return waypoints
+
     # ------------------------------------------------------------------ #
     #  Цільова функція                                                     #
     # ------------------------------------------------------------------ #

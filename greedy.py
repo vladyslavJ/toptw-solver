@@ -26,8 +26,10 @@ class SolveResult:
         print(f"Час виконання: {self.runtime:.4f} сек")
         for r, route in enumerate(self.routes):
             if self.problem is not None:
+                waypoints = self.problem.route_waypoint_times(route, r)
+                route_str = " → ".join(f"{pt}({t:.0f}хв)" for pt, t in waypoints)
                 dur = self.problem.route_duration(route, r)
-                print(f"  Маршрут {r + 1}: {[0] + route + [0]}  (тривалість={dur:.1f})")
+                print(f"  Маршрут {r + 1}: {route_str}  (тривалість={dur:.1f}хв)")
             else:
                 print(f"  Маршрут {r + 1}: {[0] + route + [0]}")
         if self.extra.get("history"):
