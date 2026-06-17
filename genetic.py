@@ -295,7 +295,8 @@ def genetic_solve(problem: ProblemInstance,
         runtime=runtime,
         extra={"history": history, "iterations": iteration,
                "k_no": k_no, "I": I, "b": b, "p_mut": p_mut,
-               "beta": beta, "A_max": A_max}
+               "beta": beta, "A_max": A_max},
+        problem=problem,
     )
 
 

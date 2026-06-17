@@ -10,12 +10,14 @@ class SolveResult:
     """Результат роботи алгоритму."""
 
     def __init__(self, algorithm: str, routes: list[list[int]], objective: float,
-                 runtime: float, extra: dict | None = None):
+                 runtime: float, extra: dict | None = None,
+                 problem: "ProblemInstance | None" = None):
         self.algorithm = algorithm
         self.routes = routes
         self.objective = objective
         self.runtime = runtime
         self.extra = extra or {}
+        self.problem = problem
 
     def display(self) -> None:
         print(f"\n{'=' * 50}")
@@ -23,7 +25,11 @@ class SolveResult:
         print(f"Z* = {self.objective:.4f}")
         print(f"Час виконання: {self.runtime:.4f} сек")
         for r, route in enumerate(self.routes):
-            print(f"  Маршрут {r + 1}: {[0] + route + [0]}")
+            if self.problem is not None:
+                dur = self.problem.route_duration(route, r)
+                print(f"  Маршрут {r + 1}: {[0] + route + [0]}  (тривалість={dur:.1f})")
+            else:
+                print(f"  Маршрут {r + 1}: {[0] + route + [0]}")
         if self.extra.get("history"):
             print(f"  Ітерацій: {self.extra.get('iterations', len(self.extra['history']) - 1)}")
 
@@ -96,7 +102,7 @@ def greedy_solve(problem: ProblemInstance) -> SolveResult:
 
     obj = _compute_objective(p, routes)
     runtime = time.perf_counter() - t0
-    return SolveResult("Жадібний алгоритм", routes, obj, runtime)
+    return SolveResult("Жадібний алгоритм", routes, obj, runtime, problem=problem)
 
 
 def _compute_objective(p: ProblemInstance, routes: list[list[int]]) -> float:
